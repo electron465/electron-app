@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:fpdart/fpdart.dart';
-
+import 'package:dartz/dartz.dart';
 import '../error/failures.dart';
 
 /// Contrato de un caso de uso: una sola acción de negocio.

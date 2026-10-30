@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:fpdart/fpdart.dart';
+import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecase/usecase.dart';
@@ -35,6 +35,20 @@ class VerifyOtp implements UseCase<User, VerifyOtpParams> {
   Future<Either<Failure, User>> call(VerifyOtpParams params) =>
       _repository.verifyOtp(phone: params.phone, code: params.code);
 }
+
+class CreatePassword implements UseCase<void, Map<String, String>> {
+  final AuthRepository repository;
+  CreatePassword(this.repository);
+
+  @override
+  Future<Either<Failure, void>> call(Map<String, String> params) {
+    return repository.createPassword(
+      identifier: params['identifier']!,
+      password: params['password']!,
+    );
+  }
+}
+
 
 class GetCurrentUser implements UseCase<User?, NoParams> {
   const GetCurrentUser(this._repository);

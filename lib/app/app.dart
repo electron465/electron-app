@@ -4,20 +4,23 @@ import 'package:go_router/go_router.dart';
 
 import '../core/di/injection.dart';
 import '../core/router/app_router.dart';
-import '../core/theme/app_theme.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 
 class App extends StatefulWidget {
-  const App({super.key});
+  final bool hasSeenOnboarding; // Recibimos la variable desde main.dart
+
+  const App({super.key, required this.hasSeenOnboarding});
 
   @override
   State<App> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
-  late final AuthBloc _authBloc = sl<AuthBloc>()
-    ..add(const AuthCheckRequested());
-  late final GoRouter _router = createRouter(_authBloc);
+  // 1. Instanciamos el AuthBloc global UNA SOLA VEZ
+  late final AuthBloc _authBloc = sl<AuthBloc>()..add(const AuthCheckRequested());
+
+  // 2. Creamos el Router UNA SOLA VEZ, pasándole el bloque y la variable del Onboarding
+  late final GoRouter _router = createRouter(_authBloc, widget.hasSeenOnboarding);
 
   @override
   void dispose() {
@@ -27,15 +30,18 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    // Solo los Blocs verdaderamente globales viven aquí.
-    return BlocProvider.value(
+    return BlocProvider.value( // Usamos .value porque el Bloc ya fue creado arriba
       value: _authBloc,
       child: MaterialApp.router(
-        title: 'App Client',
+        title: 'Grupo Electron',
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        routerConfig: _router,
+        // Asumo que tienes tu AppTheme configurado, si no, usa ThemeData directamente
+        // theme: AppTheme.light,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2196F3)),
+          useMaterial3: true,
+        ),
+        routerConfig: _router, // Usamos el router que creamos en la línea 22
       ),
     );
   }

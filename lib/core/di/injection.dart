@@ -1,11 +1,11 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/auth_usecases.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/auth/presentation/cubit/register_cubit.dart';
 import '../../features/auth/presentation/cubit/login_cubit.dart';
 import '../../features/credit/data/datasources/credit_remote_data_source.dart';
 import '../../features/credit/data/repositories/credit_repository_impl.dart';
@@ -77,8 +77,16 @@ void _auth() {
     ..registerLazySingleton(() => VerifyOtp(sl()))
     ..registerLazySingleton(() => GetCurrentUser(sl()))
     ..registerLazySingleton(() => Logout(sl()))
+    ..registerLazySingleton(() => CreatePassword(sl())) // <-- Agregado
     ..registerLazySingleton(() => AuthBloc(getCurrentUser: sl(), logout: sl()))
-    ..registerFactory(() => LoginCubit(requestOtp: sl(), verifyOtp: sl()));
+    ..registerFactory(() => LoginCubit(requestOtp: sl(), verifyOtp: sl()))
+
+    // Registramos el RegisterCubit con los 3 casos de uso:
+   ..registerFactory(() => RegisterCubit(
+         requestOtp: sl(),
+         verifyOtp: sl(),
+         createPassword: sl(),
+       ));
 }
 
 void _credit() {

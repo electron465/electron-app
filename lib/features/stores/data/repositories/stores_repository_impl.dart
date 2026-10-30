@@ -1,5 +1,4 @@
-import 'package:fpdart/fpdart.dart';
-
+import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/error/guard.dart';
 import '../../domain/entities/store.dart';

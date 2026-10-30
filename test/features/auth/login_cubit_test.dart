@@ -4,7 +4,6 @@ import 'package:app_client/features/auth/domain/usecases/auth_usecases.dart';
 import 'package:app_client/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockRequestOtp extends Mock implements RequestOtp {}

@@ -10,6 +10,7 @@ abstract interface class AuthRemoteDataSource {
     required String code,
   });
   Future<UserModel> me();
+  Future<void> createPassword({required String identifier, required String password});
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -20,6 +21,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> requestOtp(String phone) =>
       _api.post('/auth/otp', data: {'phone': phone});
+
+  @override
+  Future<void> createPassword({required String identifier, required String password}) async {
+    // TODO: Conectar con tu API real
+    await Future.delayed(const Duration(milliseconds: 500));
+  }
 
   @override
   Future<AuthSessionModel> verifyOtp({
@@ -47,6 +54,12 @@ class AuthMockDataSource implements AuthRemoteDataSource {
 
   @override
   Future<void> requestOtp(String phone) => _backend.delay();
+
+  @override
+  Future<void> createPassword({required String identifier, required String password}) async {
+    await _backend.delay();
+    // Aquí podrías guardar la contraseña en tu MockBackend si lo deseas
+  }
 
   @override
   Future<AuthSessionModel> verifyOtp({

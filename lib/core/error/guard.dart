@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:fpdart/fpdart.dart';
-
+import 'package:dartz/dartz.dart';
 import 'exceptions.dart';
 import 'failures.dart';
 

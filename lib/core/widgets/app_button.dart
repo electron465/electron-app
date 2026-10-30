@@ -1,28 +1,40 @@
 import 'package:flutter/material.dart';
 
-/// Botón principal con estado de carga integrado.
 class AppButton extends StatelessWidget {
-  const AppButton({
-    required this.label,
-    required this.onPressed,
-    this.isLoading = false,
-    super.key,
-  });
-
-  final String label;
+  final String text;
+  final String? label;
   final VoidCallback? onPressed;
   final bool isLoading;
 
+  const AppButton({
+    super.key,
+    this.text = '',
+    this.label,
+    this.onPressed,
+    this.isLoading = false,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
+    final buttonText = label ?? text;
+
+    return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF2196F3),
+        minimumSize: const Size(double.infinity, 54),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
       child: isLoading
-          ? const SizedBox.square(
-              dimension: 22,
-              child: CircularProgressIndicator(strokeWidth: 2.5),
+          ? const SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
             )
-          : Text(label),
+          : Text(
+              buttonText,
+              style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+            ),
     );
   }
 }
