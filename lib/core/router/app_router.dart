@@ -11,6 +11,12 @@ import '../../features/auth/presentation/pages/face_capture_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/registro/data/cedula_ocr_parser.dart';
+import '../../features/registro/data/registro_api.dart';
+import '../../features/registro/presentation/cubit/cedula_registro_cubit.dart';
+import '../../features/registro/presentation/pages/registro_datos_page.dart';
+import '../../core/network/api_client.dart';
+import '../../core/storage/token_storage.dart';
 import '../../features/credit/presentation/cubit/credit_cubit.dart';
 import '../../features/credit/presentation/pages/home_page.dart';
 import '../../features/orders/presentation/bloc/orders_bloc.dart';
@@ -40,6 +46,7 @@ GoRouter createRouter(AuthBloc authBloc, bool hasSeenOnboarding) => GoRouter(
         final onOnboarding = location == Routes.onboarding;
         final onDocs = location == '/docs-capture';
         final onFace = location == '/face-capture';
+        final onRegistroDatos = location == '/registro-datos';
 
         // AQUÍ ESTÁ LA VARIABLE MOVIDA A SU LUGAR CORRECTO:
         final onHome = location == Routes.home;
@@ -48,7 +55,7 @@ GoRouter createRouter(AuthBloc authBloc, bool hasSeenOnboarding) => GoRouter(
           AuthStatus.unknown => onSplash ? null : Routes.splash,
 
           // Usamos onHome aquí:
-          AuthStatus.unauthenticated => (onLogin || onRegister || onOnboarding || onDocs || onFace || onHome)
+          AuthStatus.unauthenticated => (onLogin || onRegister || onOnboarding || onDocs || onFace || onRegistroDatos || onHome)
               ? null
               : Routes.login,
 
@@ -86,6 +93,20 @@ GoRouter createRouter(AuthBloc authBloc, bool hasSeenOnboarding) => GoRouter(
         GoRoute(
           path: '/face-capture',
           builder: (_, _) => const FaceCapturePage(),
+        ),
+        GoRoute(
+          path: '/registro-datos',
+          builder: (context, state) {
+            final ocr = state.extra is CedulaOcrData
+                ? state.extra! as CedulaOcrData
+                : const CedulaOcrData();
+            return BlocProvider(
+              create: (_) => CedulaRegistroCubit(
+                RegistroApi(sl<ApiClient>(), sl<TokenStorage>()),
+              ),
+              child: RegistroDatosPage(ocr: ocr),
+            );
+          },
         ),
         StatefulShellRoute.indexedStack(
           builder: (_, _, shell) => MainShell(navigationShell: shell),

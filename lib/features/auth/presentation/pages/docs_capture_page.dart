@@ -3,6 +3,7 @@ import 'package:document_camera_frame/document_camera_frame.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:go_router/go_router.dart'; // <-- AGREGADO: Para usar context.push
 import '../../../../core/widgets/app_button.dart';
+import '../../../registro/data/cedula_ocr_parser.dart';
 
 class DocsCapturePage extends StatefulWidget {
   final bool isMilitar;
@@ -141,7 +142,14 @@ class _DocsCapturePageState extends State<DocsCapturePage> {
           AppButton(
             text: 'Procesar Documento',
             onPressed: () {
-              context.push('/face-capture');
+              final ocr = CedulaOcrParser.parse(_extractedText);
+              if (!ocr.tieneCedula) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('No se detectó el número de cédula. Vuelva a escanear.'),
+                ));
+                return;
+              }
+              context.push('/registro-datos', extra: ocr);
             },
           ),
         ],

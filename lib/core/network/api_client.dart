@@ -49,9 +49,12 @@ class ApiClient {
       if (statusCode == 401) throw const UnauthorizedException();
 
       final data = e.response?.data;
-      final message = data is Map && data['message'] is String
-          ? data['message'] as String
-          : 'Ocurrió un error en el servidor.';
+      // FastAPI devuelve {"detail": "..."}; otros backends usan {"message": "..."}.
+      final message = data is Map && data['detail'] is String
+          ? data['detail'] as String
+          : data is Map && data['message'] is String
+              ? data['message'] as String
+              : 'Ocurrió un error en el servidor.';
       throw ServerException(message, statusCode: statusCode);
     }
   }
